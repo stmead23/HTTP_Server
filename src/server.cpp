@@ -25,9 +25,9 @@ int clientHandler(int connfd) {
         messg += 2;
         messg = strtok(messg, " ");
         std::cout << messg << std::endl;
-        char* messg_size;
+        char messg_size[5];
         std::cout << "Finding size\n";
-        snprintf(messg_size, 100, "%d", (int)strlen(messg));
+        snprintf(messg_size, 5, "%d", (int)strlen(messg));
         std::cout << messg << std::endl;// << ", " << messg_size << std::endl;
         strcat(send_buffer, messg_size);
         strcat(send_buffer, "\n\n");
