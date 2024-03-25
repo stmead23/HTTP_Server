@@ -29,7 +29,7 @@ int clientHandler(int connfd) {
         snprintf(messg_size, 100, "%d", (int)strlen(messg));
         std::cout << messg << ", " << messg_size << std::endl;
         strcat(send_buffer, messg_size);
-        strcat(send_buffer, "\r\n\r\n");
+        strcat(send_buffer, "\n\n");
         strcat(send_buffer, messg);
         strcat(send_buffer, "\r\n\r\n");
     } else {
