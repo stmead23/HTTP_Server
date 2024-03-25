@@ -20,15 +20,14 @@ int clientHandler(int connfd) {
     if (receive_buffer[4] == '/' && receive_buffer[5] == ' ') {
         strcpy(send_buffer, "HTTP/1.1 200 OK\r\n\r\n");
     } else if (receive_buffer[4] == '/' && strstr(receive_buffer, "/echo/") != NULL) {
-        strcpy(send_buffer, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ");
+        strcpy(send_buffer, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ");
         char* messg = strchr(receive_buffer, 'o');
         messg += 2;
         messg = strtok(messg, " ");
-        std::cout << messg << std::endl;
+        
         char messg_size[5];
-        std::cout << "Finding size\n";
         snprintf(messg_size, 5, "%d", (int)strlen(messg));
-        std::cout << messg << std::endl;// << ", " << messg_size << std::endl;
+
         strcat(send_buffer, messg_size);
         strcat(send_buffer, "\n\n");
         strcat(send_buffer, messg);
