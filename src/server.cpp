@@ -20,7 +20,7 @@ int clientHandler(int connfd) {
     if (receive_buffer[4] == '/' && receive_buffer[5] == ' ') {
         strcpy(send_buffer, "HTTP/1.1 200 OK\r\n\r\n");
     } else {
-        strcpy(send_buffer, "HTTP/1.1 400 Not Found\r\n\r\n" );
+        strcpy(send_buffer, "HTTP/1.1 404 Not Found\r\n\r\n" );
     }
     
     if (write(connfd, send_buffer, sizeof(send_buffer)) < 0) {
