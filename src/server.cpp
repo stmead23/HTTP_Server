@@ -32,6 +32,15 @@ int clientHandler(int connfd) {
         strcat(send_buffer, "\n\n");
         strcat(send_buffer, messg);
         strcat(send_buffer, "\r\n\r\n");
+    } else if (receive_buffer[4] == '/' && strstr(receive_buffer, "/user-agent") != NULL) {
+        strcpy(send_buffer, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ");
+        char* messg = strstr(receive_buffer, "curl");
+        char messg_size[5];
+        snprintf(messg_size, 5, "%d", (int)strlen(messg));
+        strcat(send_buffer, messg_size);
+        strcat(send_buffer, "\n\n");
+        strcat(send_buffer, messg);
+        strcat(send_buffer, "\r\n\r\n");
     } else {
         strcpy(send_buffer, "HTTP/1.1 404 Not Found\r\n\r\n" );
     }
