@@ -29,6 +29,7 @@ int clientHandler(int connfd) {
         strcat(send_buffer, messg_size);
         strcat(send_buffer, "\r\n\r\n");
         strcat(send_buffer, messg);
+        strcat(send_buffer, "\r\n\r\n");
     } else {
         strcpy(send_buffer, "HTTP/1.1 404 Not Found\r\n\r\n" );
     }
