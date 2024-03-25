@@ -15,10 +15,20 @@ int clientHandler(int connfd) {
         std::cerr << "Failed to receive\n";
         return 1;
     }
-    char send_buffer[31];
-    std::cout << receive_buffer[4] << std::endl;
+    char send_buffer[BUFF_SIZE];
+    
     if (receive_buffer[4] == '/' && receive_buffer[5] == ' ') {
         strcpy(send_buffer, "HTTP/1.1 200 OK\r\n\r\n");
+    } else if (receive_buffer[4] == '/' && strstr(receive_buffer, "/echo/") != NULL) {
+        strcpy(send_buffer, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ");
+        char* messg = strchr(receive_buffer, 'o');
+        messg += 2;
+        messg = strtok(messg, " ");
+        char* messg_size;
+        snprintf(messg_size, 100, "%d", (int)strlen(messg));
+        strcat(send_buffer, messg_size);
+        strcat(send_buffer, "\r\n\r\n");
+        strcat(send_buffer, messg);
     } else {
         strcpy(send_buffer, "HTTP/1.1 404 Not Found\r\n\r\n" );
     }
