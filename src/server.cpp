@@ -17,7 +17,7 @@ int clientHandler(int connfd) {
     }
     char send_buffer[31];
     std::cout << receive_buffer[4] << std::endl;
-    if (receive_buffer[4] == '\\') {
+    if (receive_buffer[4] == '/') {
         strcpy(send_buffer, "HTTP/1.1 200 OK\r\n\r\n");
     } else {
         strcpy(send_buffer, "HTTP/1.1 400 Not Found\r\n\r\n" );
