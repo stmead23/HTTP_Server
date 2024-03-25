@@ -24,9 +24,10 @@ int clientHandler(int connfd) {
         char* messg = strchr(receive_buffer, 'o');
         messg += 2;
         messg = strtok(messg, " ");
-        std::cout << messg << std::endl;
+        
         char* messg_size;
         snprintf(messg_size, 100, "%d", (int)strlen(messg));
+        std::cout << messg << ", " << messg_size << std::endl;
         strcat(send_buffer, messg_size);
         strcat(send_buffer, "\r\n\r\n");
         strcat(send_buffer, messg);
