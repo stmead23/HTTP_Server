@@ -45,6 +45,7 @@ int clientHandler(int connfd) {
         strcat(send_buffer, messg);
         strcat(send_buffer, "\r\n\r\n");
     } else {
+        std::cout << "404\n";
         strcpy(send_buffer, "HTTP/1.1 404 Not Found\r\n\r\n" );
     }
     
