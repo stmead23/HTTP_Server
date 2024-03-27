@@ -10,46 +10,32 @@
 #define BUFF_SIZE 1024
 
 int clientHandler(int connfd) {
-    std::cout << "Receiving data\n";
     char receive_buffer[BUFF_SIZE];
     if (read(connfd, receive_buffer, sizeof(receive_buffer)) < 0) {
         std::cerr << "Failed to receive\n";
         return 1;
     }
+    std::string receive(receive_buffer);
+    std::string send_buff;
     char send_buffer[BUFF_SIZE];
     
-    if (receive_buffer[4] == '/' && receive_buffer[5] == ' ') {
-        strcpy(send_buffer, "HTTP/1.1 200 OK\r\n\r\n");
-    } else if (receive_buffer[4] == '/' && strstr(receive_buffer, "/echo/") != NULL) {
-        strcpy(send_buffer, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ");
-        char* messg = strchr(receive_buffer, 'o');
-        messg += 2;
-        messg = strtok(messg, " ");
-        
-        char messg_size[5];
-        snprintf(messg_size, 5, "%d", (int)strlen(messg));
-
-        strcat(send_buffer, messg_size);
-        strcat(send_buffer, "\n\n");
-        strcat(send_buffer, messg);
-        strcat(send_buffer, "\r\n\r\n");
-    } else if (strstr(receive_buffer, "/user-agent") != NULL) {
-        std::cout << "user-agent\n";
-        strcpy(send_buffer, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ");
-        char* messg = strstr(receive_buffer, "User-Agent:");
-        messg += 12;
-        std::cout << "Find size\n";
-        char messg_size[5];
-        snprintf(messg_size, 5, "%d", (int)strlen(messg));
-        strcat(send_buffer, messg_size);
-        strcat(send_buffer, "\n\n");
-        strcat(send_buffer, messg);
-        strcat(send_buffer, "\r\n\r\n");
+    if (receive.find("/ ") != std::string::npos) {
+        send_buff = "HTTP/1.1 200 OK\r\n\r\n";
+    } else if (receive.find("/echo/") != std::string::npos) {
+        send_buff = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ";
+        std::string::size_type pos1 = receive.find("echo") + 5;
+        std::string::size_type pos2 = receive.find(" ", pos1);
+        send_buff += std::to_string(pos2-pos1) + "\n\n";
+        send_buff += receive.substr(pos1, pos2-pos1) + "\r\n\r\n";
+    } else if (receive.find("/user-agent") != std::string::npos) {
+        send_buff = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ";
+        std::string::size_type pos = receive.find_last_of("User-Agent") + 12;
+        send_buff += std::to_string(receive.size()-1-pos) + "\n\n";
+        send_buff += receive.substr(pos, receive.size()-1-pos) + "\r\n\r\n";
     } else {
-        std::cout << "404\n";
-        strcpy(send_buffer, "HTTP/1.1 404 Not Found\r\n\r\n" );
+        send_buff = "HTTP/1.1 404 Not Found\r\n\r\n";
     }
-    
+    std::strcpy(send_buffer, send_buff.c_str()); 
     if (write(connfd, send_buffer, sizeof(send_buffer)) < 0) {
         return 1;
     }
