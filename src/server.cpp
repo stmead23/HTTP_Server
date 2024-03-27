@@ -29,10 +29,10 @@ int clientHandler(int connfd) {
         send_buff += receive.substr(pos1, pos2-pos1) + "\r\n\r\n";
     } else if (receive.find("/user-agent") != std::string::npos) {
         send_buff = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ";
-        std::string::size_type pos = receive.rfind("User-Agent") + 12;
-        std::cout << receive.size() - pos << std::endl;
-        send_buff += std::to_string(receive.size()-pos) + "\n\n";
-        send_buff += receive.substr(pos, receive.size()-pos) + "\r\n\r\n";
+        std::string::size_type pos1 = receive.rfind("User-Agent") + 12;
+        std::string::size_type pos2 = receive.find("\n", pos1);
+        send_buff += std::to_string(pos2-pos1) + "\n\n";
+        send_buff += receive.substr(pos1, pos2-pos1) + "\r\n\r\n";
     } else {
         send_buff = "HTTP/1.1 404 Not Found\r\n\r\n";
     }
