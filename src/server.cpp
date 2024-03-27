@@ -36,7 +36,8 @@ int clientHandler(int connfd) {
     } else if (strstr(receive_buffer, "/user-agent") != NULL) {
         std::cout << "user-agent\n";
         strcpy(send_buffer, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ");
-        char* messg = strstr(receive_buffer, "curl");
+        char* messg = strstr(receive_buffer, "User-Agent:");
+        messg += 12;
         std::cout << "Find size\n";
         char messg_size[5];
         snprintf(messg_size, 5, "%d", (int)strlen(messg));
