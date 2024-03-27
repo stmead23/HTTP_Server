@@ -33,7 +33,7 @@ int clientHandler(int connfd) {
         strcat(send_buffer, "\n\n");
         strcat(send_buffer, messg);
         strcat(send_buffer, "\r\n\r\n");
-    } else if (strstr(receive_buffer, "/user-agent") != NULL) {
+    } else if (strstr(receive_buffer, "user-agent") != NULL) {
         std::cout << "user-agent\n";
         strcpy(send_buffer, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ");
         char* messg = strstr(receive_buffer, "curl");
