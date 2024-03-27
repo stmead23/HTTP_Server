@@ -10,6 +10,7 @@
 #define BUFF_SIZE 1024
 
 int clientHandler(int connfd) {
+    std::cout << "Receiving data\n";
     char receive_buffer[BUFF_SIZE];
     if (read(connfd, receive_buffer, sizeof(receive_buffer)) < 0) {
         std::cerr << "Failed to receive\n";
