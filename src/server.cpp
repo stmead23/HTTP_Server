@@ -30,6 +30,7 @@ int clientHandler(int connfd) {
     } else if (receive.find("/user-agent") != std::string::npos) {
         send_buff = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: ";
         std::string::size_type pos = receive.find_last_of("User-Agent") + 12;
+        std::cout << receive.size() - pos << std::endl;
         send_buff += std::to_string(receive.size()-pos) + "\n\n";
         send_buff += receive.substr(pos, receive.size()-pos) + "\r\n\r\n";
     } else {
