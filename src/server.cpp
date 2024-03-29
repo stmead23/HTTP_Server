@@ -20,6 +20,7 @@ int clientHandler(int connfd) {
     char receive_buffer[BUFF_SIZE];
     if (read(connfd, receive_buffer, sizeof(receive_buffer)) < 0) {
         std::cerr << "Failed to receive\n";
+        close(connfd);
         return 1;
     }
     std::string receive(receive_buffer);
@@ -94,6 +95,7 @@ int main(int argc, char **argv) {
     for (auto &x : client_pool) {
         x.join();
     }
-    
+    close(server_fd);
+
     return 0;
 }
