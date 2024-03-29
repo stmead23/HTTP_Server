@@ -32,8 +32,9 @@ int clientHandler(int connfd) {
         send_buffer = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ";
         std::string::size_type pos1 = receive.rfind("User-Agent") + 12;
         std::string::size_type pos2 = receive.find("\r\n", pos1);
-        send_buffer += std::to_string(pos2-pos1) + "\r\n\r\n";
-        send_buffer += receive.substr(pos1, pos2-pos1) + "\r\n";
+        std::string messg = receive.substr(pos1, pos2-pos1);
+        send_buffer += std::to_string(messg.size()) + "\r\n\r\n";
+        send_buffer += messg + "\r\n";
     } else {
         send_buffer = "HTTP/1.1 404 Not Found\r\n\r\n";
     } 
