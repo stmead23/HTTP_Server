@@ -90,20 +90,18 @@ int main(int argc, char **argv) {
     if (connfd < 0) {
         return 1;
     }
-    std::thread client(clientHandler, connfd);
-    /*std::vector<std::thread> client_pool;
+    std::vector<std::thread> client_pool;
     while (true) {
         int connfd = accept(server_fd, NULL, NULL);
         if (connfd < 0) {
             continue;
         }
         client_pool.emplace_back(clientHandler, connfd);
-    }*/
+    }
     
-    /*for (auto &x : client_pool) {
+    for (auto &x : client_pool) {
         x.join();
-    }*/
-    client.join();
+    }
     close(server_fd);
 
     return 0;
