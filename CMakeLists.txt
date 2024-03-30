@@ -3,7 +3,5 @@ project(http-server-starter-cpp)
 set(CMAKE_CXX_STANDARD 20) # Enable the C++20 standard
 
 set(SOURCE_FILES src/server.cpp)
-SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++20 -pthread")
-ADD_EXECUTABLE(threads_1 threads_1.cpp)
 
 add_executable(server ${SOURCE_FILES})
