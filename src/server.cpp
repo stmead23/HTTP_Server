@@ -8,21 +8,20 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <thread>
-#include <pthread.h>
 #include <vector>
 #define BUFF_SIZE 1024
 
-int clientHandler(int connfd) {
+void clientHandler(int connfd) {
     if (connfd < 0) {
         std::cerr << "Error with connection.\n";
-        return 1;
+        return;
     }
     
     char receive_buffer[BUFF_SIZE];
     if (read(connfd, receive_buffer, sizeof(receive_buffer)) < 0) {
         std::cerr << "Failed to receive\n";
         close(connfd);
-        return 1;
+        return;
     }
     std::string receive(receive_buffer);
     std::string send_buffer;
@@ -46,11 +45,11 @@ int clientHandler(int connfd) {
         send_buffer = "HTTP/1.1 404 Not Found\r\n\r\n";
     } 
     if (write(connfd, send_buffer.c_str(), send_buffer.size()) < 0) {
-        return 1;
+        return;
     }
     
     close(connfd);
-    return 0;
+    return;
 }
 
 int setup(void) {
@@ -90,7 +89,10 @@ int main(int argc, char **argv) {
     std::vector<std::thread> client_pool;
     while (true) {
         int connfd = accept(server_fd, NULL, NULL);
-        client_pool.emplace_back(std::thread(clientHandler, connfd));
+        if (connfd < 0) {
+            continue;
+        }
+        client_pool.emplace_back(clientHandler, connfd);
     }
     
     for (auto &x : client_pool) {
