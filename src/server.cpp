@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     if (connfd < 0) {
         return 1;
     }
-    std::thread client(clientHandler, connfd);
+    //std::thread client(clientHandler, connfd);
     /*std::vector<std::thread> client_pool;
     while (true) {
         int connfd = accept(server_fd, NULL, NULL);
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
     /*for (auto &x : client_pool) {
         x.join();
     }*/
-    client.join();
+    //client.join();
     close(server_fd);
 
     return 0;
