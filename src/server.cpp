@@ -86,10 +86,6 @@ int setup(void) {
 
 int main(int argc, char **argv) {
     int server_fd = setup();
-    int connfd = accept(server_fd, NULL, NULL);
-    if (connfd < 0) {
-        return 1;
-    }
     std::vector<std::thread> client_pool;
     while (true) {
         int connfd = accept(server_fd, NULL, NULL);
