@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <thread>
+#include <pthread.h>
 #include <vector>
 #define BUFF_SIZE 1024
 
