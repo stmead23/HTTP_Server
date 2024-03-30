@@ -89,8 +89,7 @@ int main(int argc, char **argv) {
     std::vector<std::thread> client_pool;
     while (true) {
         int connfd = accept(server_fd, NULL, NULL);
-        std::thread client(clientHandler, connfd);
-        client_pool.emplace_back(client);
+        client_pool.emplace_back(std::thread(clientHandler(connfd)));
     }
     
     for (auto &x : client_pool) {
