@@ -85,20 +85,12 @@ int setup(void) {
 }
 
 int main(int argc, char **argv) {
-    if (__cplusplus == 202101L) std::cout << "C++23";
-    else if (__cplusplus == 202002L) std::cout << "C++20";
-    else if (__cplusplus == 201703L) std::cout << "C++17";
-    else if (__cplusplus == 201402L) std::cout << "C++14";
-    else if (__cplusplus == 201103L) std::cout << "C++11";
-    else if (__cplusplus == 199711L) std::cout << "C++98";
-    else std::cout << "pre-standard C++." << __cplusplus;
-    std::cout << "\n";
     int server_fd = setup();
     int connfd = accept(server_fd, NULL, NULL);
     if (connfd < 0) {
         return 1;
     }
-    //std::thread client(clientHandler, connfd);
+    std::thread client(clientHandler, connfd);
     /*std::vector<std::thread> client_pool;
     while (true) {
         int connfd = accept(server_fd, NULL, NULL);
@@ -111,7 +103,7 @@ int main(int argc, char **argv) {
     /*for (auto &x : client_pool) {
         x.join();
     }*/
-    //client.join();
+    client.join();
     close(server_fd);
 
     return 0;
