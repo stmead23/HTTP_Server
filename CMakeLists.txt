@@ -6,4 +6,4 @@ find_package(Threads REQUIRED)
 set(SOURCE_FILES src/server.cpp)
 
 add_executable(server ${SOURCE_FILES})
-target_link_libraries(Threads::Threads)
+target_link_libraries(server Threads::Threads)
