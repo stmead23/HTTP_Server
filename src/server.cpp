@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <string>
 #include <cstring>
@@ -11,7 +12,7 @@
 #include <vector>
 #define BUFF_SIZE 1024
 
-void clientHandler(int connfd) {
+void clientHandler(int connfd, std::string file_path) {
     if (connfd < 0) {
         std::cerr << "Error with connection.\n";
         return;
@@ -41,6 +42,26 @@ void clientHandler(int connfd) {
         std::string messg = receive.substr(pos1, pos2-pos1);
         send_buffer += std::to_string(messg.size()) + "\r\n\r\n";
         send_buffer += messg + "\r\n";
+    } else if (receive.find("files") != std::string::npos) {
+        std::string::size_type pos1 = receive.find("files") + 6;
+        std::string::size_type pos2 = receive.find(" ", pos1);
+        std::string file_name = receive.substr(pos1, pos2-pos1);
+        std::ifstream file(file_path + "/" + file_name);
+        if (!file.is_open()) {
+            send_buffer = "HTTP/1.1 404 Not Found\r\n\r\n";
+        } else {
+            send_buffer = "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ";
+            std::string file_buffer;
+            char char_buffer;
+            while (!file.eof()) {
+                file.get(char_buffer);
+                if (char_buffer == '\n') {
+                    file_buffer += '\r';
+                }
+                file_buffer += char_buffer;
+            }
+            send_buffer += std::to_string(file_buffer.size()) + "\r\n\r\n" + file_buffer + "\r\n";
+        }
     } else {
         send_buffer = "HTTP/1.1 404 Not Found\r\n\r\n";
     } 
@@ -89,8 +110,9 @@ int setup(void) {
 }
 
 int main(int argc, char **argv) {
-    if (argc == 3) {
-        std::cout << argv[1] << " " << argv[2] << std::endl;
+    std::string file_path;
+    if (argc == 3 && strcmp(argv[1], "--directory") == 0) {
+        file_path = argv[2];
     }
     
     //Setup the server connection, and get server file description id
@@ -106,7 +128,7 @@ int main(int argc, char **argv) {
         if (connfd < 0) {
             continue;
         }
-        client_pool.emplace_back(clientHandler, connfd);
+        client_pool.emplace_back(clientHandler, connfd, file_path);
     }
     
     //Wait for the client requests to be done, then close the server connection
