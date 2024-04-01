@@ -70,6 +70,7 @@ void clientHandler(int connfd, std::string file_path) {
         std::ofstream new_file(file_path+"/"+file_name);
         long char_count = std::stol(receive.substr(receive.find("Content-Length")));
         std::string buff = receive.substr(receive.find("\n\n")+2);
+        std::cout << "Content to be written:\n" << buff << std::endl;
         new_file.write(buff.c_str(), char_count);
         new_file.close();
         send_buffer = "HTTP/1.1 201 Created\r\n\r\n";
