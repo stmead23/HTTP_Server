@@ -60,7 +60,7 @@ void clientHandler(int connfd, std::string file_path) {
                 }
                 file_buffer += char_buffer;
             }
-            send_buffer += std::to_string(file_buffer.size()) + "\r\n\r\n" + file_buffer + "\r\n";
+            send_buffer += std::to_string(file_buffer.size()-1) + "\r\n\r\n" + file_buffer + "\r\n";
         }
     } else {
         send_buffer = "HTTP/1.1 404 Not Found\r\n\r\n";
