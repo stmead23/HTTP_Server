@@ -68,7 +68,7 @@ void clientHandler(int connfd, std::string file_path) {
         std::string::size_type pos2 = receive.find(" ", pos1);
         std::string file_name = receive.substr(pos1, pos2-pos1);
         std::ofstream new_file(file_path+"/"+file_name);
-
+        new_file.close();
         send_buffer = "HTTP/1.1 201 Created\r\n\r\n";
     } else {
         send_buffer = "HTTP/1.1 404 Not Found\r\n\r\n";
