@@ -68,6 +68,9 @@ void clientHandler(int connfd, std::string file_path) {
         std::string::size_type pos2 = receive.find(" ", pos1);
         std::string file_name = receive.substr(pos1, pos2-pos1);
         std::ofstream new_file(file_path+"/"+file_name);
+        long char_count = std::stol(receive.substr(receive.find("Content-Length")));
+        std::string buff = receive.substr(receive.find("\n\n")+2);
+        new_file.write(buff.c_str(), char_count);
         new_file.close();
         send_buffer = "HTTP/1.1 201 Created\r\n\r\n";
     } else {
