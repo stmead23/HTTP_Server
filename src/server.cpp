@@ -68,7 +68,7 @@ void clientHandler(int connfd, std::string file_path) {
         std::string::size_type pos2 = receive.find(" ", pos1);
         std::string file_name = receive.substr(pos1, pos2-pos1);
         std::ofstream new_file(file_path+"/"+file_name);
-        std::string buff = receive.substr(receive.find("\n\n")+2);
+        std::string buff = receive.substr(receive.rfind("\n\n")+2);
         std::cout << "Content to be written:\n" << buff << std::endl;
         new_file << buff.c_str();
         new_file.close();
