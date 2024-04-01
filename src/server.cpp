@@ -26,7 +26,7 @@ void clientHandler(int connfd, std::string file_path) {
     }
     std::string receive(receive_buffer);
     std::string send_buffer;
-    
+    std::cout << "Passed info:\n" << receive << std::endl;
     if (receive.find("/ ") != std::string::npos) {
         send_buffer = "HTTP/1.1 200 OK\r\n\r\n";
     } else if (receive.find("/echo/") != std::string::npos) {
@@ -62,12 +62,13 @@ void clientHandler(int connfd, std::string file_path) {
             }
             send_buffer += std::to_string(file_buffer.size()-1) + "\r\n\r\n" + file_buffer + "\r\n";
         }
+        file.close();
     } else if (receive.find("POST") != std::string::npos) {
-        std::cout << "Passed info:\n" << receive << std::endl;
         std::string::size_type pos1 = receive.find("files") + 6;
         std::string::size_type pos2 = receive.find(" ", pos1);
         std::string file_name = receive.substr(pos1, pos2-pos1);
         std::ofstream new_file(file_path+"/"+file_name);
+
         send_buffer = "HTTP/1.1 201 Created\r\n\r\n";
     } else {
         send_buffer = "HTTP/1.1 404 Not Found\r\n\r\n";
