@@ -52,18 +52,22 @@ void clientHandler(int connfd) {
     return;
 }
 
+//Runs all necessary setup for the server connection, and returns the server file descriptor for use later
 int setup(void) {
+    //Creates the endpoint for communication between client and server,
+    //and returns the file descriptor for that endpoint. If the file
+    //descriptor is negative, an error occured
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
         std::cerr << "Failed to create server socket\n";
-        return 1;
+        return -1;
     }
 
     //ensures that we don't run into 'Address already in use' errors
     int reuse = 1;
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse)) < 0) {
         std::cerr << "setsockopt failed\n";
-        return 1;
+        return -1;
     }
 
     struct sockaddr_in server_addr;
@@ -73,13 +77,13 @@ int setup(void) {
 
     if (bind(server_fd, (struct sockaddr *) &server_addr, sizeof(server_addr)) != 0) {
         std::cerr << "Failed to bind to port 4221\n";
-        return 1;
+        return -1;
     }
 
     int connection_backlog = 5;
     if (listen(server_fd, connection_backlog) != 0) {
         std::cerr << "listen failed\n";
-        return 1;
+        return -1;
     }
     return server_fd;
 }
@@ -89,7 +93,13 @@ int main(int argc, char **argv) {
         std::cout << argv[1] << " " << argv[2] << std::endl;
     }
     
+    //Setup the server connection, and get server file description id
     int server_fd = setup();
+    if (server_fd < 0) {
+        return -1;
+    }
+
+    //Create a vector of threads to handle more than one client at the same time
     std::vector<std::thread> client_pool;
     while (true) {
         int connfd = accept(server_fd, NULL, NULL);
@@ -99,6 +109,7 @@ int main(int argc, char **argv) {
         client_pool.emplace_back(clientHandler, connfd);
     }
     
+    //Wait for the client requests to be done, then close the server connection
     for (auto &x : client_pool) {
         x.join();
     }
