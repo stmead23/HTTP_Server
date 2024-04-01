@@ -63,7 +63,7 @@ void clientHandler(int connfd, std::string file_path) {
             send_buffer += std::to_string(file_buffer.size()-1) + "\r\n\r\n" + file_buffer + "\r\n";
         }
         file.close();
-    } else if (receive.find("POST") != std::string::npos) {
+    } else if (receive.substr(0,4) == "POST") {
         std::string::size_type pos1 = receive.find("files") + 6;
         std::string::size_type pos2 = receive.find(" ", pos1);
         std::string file_name = receive.substr(pos1, pos2-pos1);
