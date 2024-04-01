@@ -26,7 +26,6 @@ void clientHandler(int connfd, std::string file_path) {
     }
     std::string receive(receive_buffer);
     std::string send_buffer;
-    std::cout << "Passed info:\n" << receive.substr(0,4) << std::endl;
     if (receive.find("/ ") != std::string::npos) {
         send_buffer = "HTTP/1.1 200 OK\r\n\r\n";
     } else if (receive.find("/echo/") != std::string::npos) {
@@ -68,8 +67,7 @@ void clientHandler(int connfd, std::string file_path) {
         std::string::size_type pos2 = receive.find(" ", pos1);
         std::string file_name = receive.substr(pos1, pos2-pos1);
         std::ofstream new_file(file_path+"/"+file_name);
-        std::string buff = receive.substr(receive.rfind("\n\n")+2);
-        std::cout << "Content to be written:\n" << buff << std::endl;
+        std::string buff = receive.substr(receive.find_last_of('\n')+1);
         new_file << buff.c_str();
         new_file.close();
         send_buffer = "HTTP/1.1 201 Created\r\n\r\n";
