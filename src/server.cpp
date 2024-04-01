@@ -85,6 +85,10 @@ int setup(void) {
 }
 
 int main(int argc, char **argv) {
+    if (argc == 3) {
+        std::cout << argv[1] << " " << argv[2] << std::endl;
+    }
+    
     int server_fd = setup();
     std::vector<std::thread> client_pool;
     while (true) {
