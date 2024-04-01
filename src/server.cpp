@@ -26,7 +26,7 @@ void clientHandler(int connfd, std::string file_path) {
     }
     std::string receive(receive_buffer);
     std::string send_buffer;
-    std::cout << "Passed info:\n" << receive << std::endl;
+    std::cout << "Passed info:\n" << receive.substr(0,4) << std::endl;
     if (receive.find("/ ") != std::string::npos) {
         send_buffer = "HTTP/1.1 200 OK\r\n\r\n";
     } else if (receive.find("/echo/") != std::string::npos) {
